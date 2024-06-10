@@ -6,6 +6,7 @@ import {
   TextInput,
   Image,
   RefreshControl,
+  Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -145,7 +146,7 @@ const index = () => {
           style={{
             alignItems: "center",
             flexDirection: "row",
-            justifyContent: "space-between",
+            justifyContent: "flex-start",
             borderWidth: 0.2,
             borderColor: "grey",
             borderRadius: 10,
@@ -155,7 +156,6 @@ const index = () => {
             shadowRadius: 4,
             backgroundColor: "#FFFEFE",
             padding: 4,
-
             width: 180,
             height: 40,
             gap: 4,
@@ -235,7 +235,13 @@ const index = () => {
           </View>
         </View>
         <View style={{ padding: 27 }}>
-          <View style={{ flex: 1 }}>
+          <View
+            style={{
+              flex: 1,
+              height: Dimensions.get("window").height / 8,
+              width: Dimensions.get("window").width / 3 - 60,
+            }}
+          >
             <FlatList
               data={services}
               columnWrapperStyle={{ justifyContent: "space-between", gap: 10 }}
