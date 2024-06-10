@@ -180,9 +180,16 @@ app.post("/reports", async (req, res) => {
 
 // GET /api/reports/:userId - Get all reports for a user
 app.get("/reports/:userId", async (req, res) => {
-  const {userId} = req.params.userId;
+  const {userId} = req.params;
+  
   try {
-    const reports = await Report.find({ user: userId }).populate('artisan').populate('service').populate('user');
+    const reports = await Report.find({ user: userId })
+    .populate('artisan')
+    .populate('service')
+    .populate('user');
+    if (!reports || reports.length === 0) {
+      return res.status(404).json({ message: "No reports found" });
+    }
     res.status(200).json({ reports });
   } catch (error) {
     console.log("Error fetching reports", error);

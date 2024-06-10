@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { ScrollView } from "react-native-gesture-handler";
 import moment from "moment";
 
+
 const ServiceRequestListHistory = ({ serviceRequest }) => {
   return (
     <View style={{ flex: 1, flexDirection: "row", marginTop: 30 }}>
@@ -162,12 +163,13 @@ const ServiceRequestListHistory = ({ serviceRequest }) => {
   );
 };
 
-const ReportListHistory = ({reports}) => {
+const ReportListHistory = ({report}) => {
+  
   const navigation = useNavigation();
   return (
     <View style={{ flex: 1, margin: 32 }}>
       <Text style={{ fontWeight: 600, fontSize: 24, marginBottom: 10 }}>
-        Plumbing repair
+        {report.service.serviceName} repair
       </Text>
       <View
         style={{
@@ -178,20 +180,20 @@ const ReportListHistory = ({reports}) => {
         }}
       >
         <Text style={{ color: "#A9ABAD", fontSize: 14, fontWeight: 400 }}>
-          12/15/2002
+        {new Date(report.reportDate).toLocaleDateString("en-GB")}
         </Text>
         <Text style={{ color: "#292D32", fontSize: 20, fontWeight: 400 }}>
-          Hmido Tricebs
+          {report.user.name}
         </Text>
       </View>
       <View style={{ marginBottom: 10 }}>
         <Text style={{ color: "#292D32" }}>
-          <Text style={{ fontWeight: 500 }}>Description: </Text>
-          The plumbing repair was completed successfully. No issues reported.
+          <Text style={{ fontWeight: 500 }}>Title: </Text>
+          {report.title}
         </Text>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <Text style={{ color: "#292D32" }}>Issues: NuLL</Text>
+        <Text style={{ color: "#292D32" }}>Issues: {report.issues}</Text>
 
         <TouchableOpacity onPress={() => navigation.navigate("reportDetails")}>
           <Text style={{ color: "#979797", textDecorationLine: "underline" }}>
@@ -205,7 +207,7 @@ const ReportListHistory = ({reports}) => {
 
 const ReviewListHistory = () => {
   const navigation = useNavigation();
-  
+  //                          *To be done later*
   return <View></View>;
 };
 
@@ -216,6 +218,7 @@ const history = () => {
 
   
   const [reports, setReports] = useState([]);
+ 
   const [reviews, setReviews] = useState([]);
 
   const [userId, setUserId] = useState("");
@@ -292,6 +295,7 @@ const history = () => {
       );
 
       setServiceRequests(response.data.serviceRequests);
+      
     } catch (error) {
       alert(`Failed to load service requests: ${error.message}`);
     }
@@ -303,7 +307,8 @@ const history = () => {
         `http://192.168.100.7:3000/reports/${userId}`
       );
 
-      setReports(reportResponse.data);
+      setReports(reportResponse.data.reports);
+      
     } catch (error) {
       alert(`Failed to load reports: ${error.message}`);
     }
@@ -432,12 +437,30 @@ const history = () => {
         )}
         {selectedTab === "Reports" && (
           <View>
-            <ReportListHistory reports={reports} />
-            <FlatList
-              data={reports}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => <Text>{item.title}</Text>}
-            />
+          {reports.map((report, index) => (
+              <React.Fragment key={index}>
+                <ReportListHistory report={report} />
+                {index < reports.length - 1 && (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 352,
+                        height: 1,
+                        backgroundColor: "#D5DEE7",
+                        border: 1,
+                        marginTop: 20,
+                      }}
+                    />
+                  </View>
+                )}
+              </React.Fragment>
+            ))}
           </View>
         )}
         {selectedTab === "Reviews" && (
