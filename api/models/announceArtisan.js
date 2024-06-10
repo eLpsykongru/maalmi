@@ -3,25 +3,41 @@ const mongoose = require('mongoose');
 const announceArtisanSchema = new mongoose.Schema({
     artisan:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Artisan",
-        required: true
+        ref: "Artisans",
+        
     },
     userAnnounce:{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
+        ref: 'Announce',
+        
+    },
+    serviceProvided:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Services',
+         
     },
     priceOffered:{
         type: Number,
-        required: true
+        
     },
     description: String,
     media: String,
-    createdAt: [{
+    respondDate: {
         type:Date,
         default: Date.now
-    }]
+    },
+    status:{
+        type:String,
+        enum:['Pending','Accepted','Rejected'],
+        default:'Pending'
+    },
+    respondTime:Date,
 });
+ 
+announceArtisanSchema.path('status').validate(function(status){
+    return ['Pending','Accepted','Rejected'].includes(status);
+},"Invalid Status");
+ 
 
 const AnnounceArtisan = mongoose.model('AnnounceArtisan', announceArtisanSchema);
 module.exports= AnnounceArtisan; 

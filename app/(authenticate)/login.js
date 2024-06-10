@@ -43,7 +43,7 @@ const login = () => {
     
     console.log("User object sent to server:", user);
 
-    axios.post(`http://192.168.100.7:3000/login`, user)
+    axios.post(`http://172.20.10.4:3000/login`, user)
   .then((response) => {
     console.log("Response from server:", response);
     const token = response.data.token;
@@ -57,7 +57,8 @@ const login = () => {
 
   
   };
-  return (
+  
+    return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       <View style={{ alignItems: "center" }}>
         <Image

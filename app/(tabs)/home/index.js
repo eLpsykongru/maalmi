@@ -238,8 +238,8 @@ const index = () => {
           <View
             style={{
               flex: 1,
-              height: Dimensions.get("window").height / 8,
-              width: Dimensions.get("window").width / 3 - 60,
+              height: Dimensions.get("window").height / 4 ,
+              width: Dimensions.get("window").width / 1.2,
             }}
           >
             <FlatList
@@ -248,6 +248,7 @@ const index = () => {
               numColumns={3}
               keyExtractor={(item) => item.id}
               renderItem={({ item, index }) => (
+                
                 <ServiceCard item={item} key={index} />
               )}
             />

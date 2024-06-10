@@ -1,13 +1,314 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import React ,{ useEffect, useState }from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import { AntDesign } from "@expo/vector-icons";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { decode as atob } from "base-64";
 import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
+import moment from "moment";
+
+const ServiceRequestListHistory = ({ serviceRequest }) => {
+  return (
+    <View style={{ flex: 1, flexDirection: "row", marginTop: 30 }}>
+      <View
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          width: "36%",
+          gap: 13,
+        }}
+      >
+        <View
+          style={{
+            width: 65,
+            height: 60,
+            borderRadius: 50,
+            backgroundColor: "red",
+          }}
+        />
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: 500,
+
+            color:
+              serviceRequest.status === "Cancelled"
+                ? "#E21616"
+                : serviceRequest.status === "Completed"
+                ? "#CDD125"
+                : "#979797",
+          }}
+        >
+          {serviceRequest.status}
+        </Text>
+        <TouchableOpacity>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: 500,
+              color: "#979797",
+            }}
+          >
+            More details
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View
+        style={{
+          flexDirection: "column",
+          width: "64%",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          marginLeft: 5,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 13,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 600,
+
+              color: "#292D32",
+            }}
+          >
+            {serviceRequest.artisan.name}
+          </Text>
+          <Text
+            style={{
+              fontSize: 14,
+              fontWeight: 600,
+
+              color: "#A9ABAD",
+            }}
+          >
+            {moment(serviceRequest.requestDate).fromNow()}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 30,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 24,
+              fontWeight: 700,
+
+              color: "#000000",
+            }}
+          >
+            {serviceRequest.price} DH
+          </Text>
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 400,
+
+              color: "#000000",
+            }}
+          >
+            {serviceRequest.service.serviceName === "Appliance Repair"
+              ? "A-P "
+              : serviceRequest.service.serviceName}
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            gap: 13,
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: 400,
+
+              color: "#3D2F2F",
+            }}
+          >
+            Time taken
+          </Text>
+          <AntDesign name="clockcircle" size={22} color="black" style={{}} />
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: 400,
+
+              color: "#211F1F",
+            }}
+          >
+            no data
+          </Text>
+        </View>
+      </View>
+    </View>
+  );
+};
+
+const ReportListHistory = ({reports}) => {
+  const navigation = useNavigation();
+  return (
+    <View style={{ flex: 1, margin: 32 }}>
+      <Text style={{ fontWeight: 600, fontSize: 24, marginBottom: 10 }}>
+        Plumbing repair
+      </Text>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+          marginBottom: 10,
+          alignItems: "baseline",
+        }}
+      >
+        <Text style={{ color: "#A9ABAD", fontSize: 14, fontWeight: 400 }}>
+          12/15/2002
+        </Text>
+        <Text style={{ color: "#292D32", fontSize: 20, fontWeight: 400 }}>
+          Hmido Tricebs
+        </Text>
+      </View>
+      <View style={{ marginBottom: 10 }}>
+        <Text style={{ color: "#292D32" }}>
+          <Text style={{ fontWeight: 500 }}>Description: </Text>
+          The plumbing repair was completed successfully. No issues reported.
+        </Text>
+      </View>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Text style={{ color: "#292D32" }}>Issues: NuLL</Text>
+
+        <TouchableOpacity onPress={() => navigation.navigate("reportDetails")}>
+          <Text style={{ color: "#979797", textDecorationLine: "underline" }}>
+            More details
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+const ReviewListHistory = () => {
+  const navigation = useNavigation();
+  
+  return <View></View>;
+};
 
 const history = () => {
   const navigation = useNavigation();
-  const [selectedTab,setSelectedTab]= useState("Service Requests");
+  const [selectedTab, setSelectedTab] = useState("Service Requests");
+  const [serviceRequests, setServiceRequests] = useState([]);
 
   
+  const [reports, setReports] = useState([]);
+  const [reviews, setReviews] = useState([]);
+
+  const [userId, setUserId] = useState("");
+
+  function base64UrlDecode(str) {
+    try {
+      // Decode base64url-encoded string
+      str = str.replace(/-/g, "+").replace(/_/g, "/");
+      while (str.length % 4) {
+        str += "=";
+      }
+
+      return atob(str);
+    } catch (error) {
+      console.error("Error decoding base64url:", error);
+      return null;
+    }
+  }
+
+  function decodeJwt(token) {
+    try {
+      const [header, payload, signature] = token.split(".");
+
+      // Decode header and payload
+      const decodedHeader = JSON.parse(base64UrlDecode(header));
+      const decodedPayload = JSON.parse(base64UrlDecode(payload));
+
+      //  console.log('Decoded Header:', decodedHeader);
+      //console.log('Decoded Payload:', decodedPayload);
+
+      return {
+        header: decodedHeader,
+        payload: decodedPayload,
+        signature: signature,
+      };
+    } catch (error) {
+      console.error("Error decoding JWT:", error);
+      return null;
+    }
+  }
+
+  useEffect(() => {
+    try {
+      const fetchUserId = async () => {
+        const token = await AsyncStorage.getItem("authToken");
+
+        if (token) {
+          const decodedToken = decodeJwt(token);
+          const userId = decodedToken.payload.userId; // Update this line
+          //console.log("Decoded user ID:", userId);
+          setUserId(userId);
+        } else {
+          console.log("No token found");
+        }
+      };
+
+      fetchUserId();
+    } catch (error) {
+      console.error("Error getting userId on history:", error);
+    }
+  }, []);
+  useEffect(() => {
+    if (userId) {
+      fetchUserServiceRequest();
+      fetchUserReports();
+      // fetchUserReviews(); *to be completed after*
+    }
+  }, [userId]);
+
+  const fetchUserServiceRequest = async () => {
+    try {
+      const response = await axios.get(
+        `http://192.168.100.7:3000/service-request/${userId}`
+      );
+
+      setServiceRequests(response.data.serviceRequests);
+    } catch (error) {
+      alert(`Failed to load service requests: ${error.message}`);
+    }
+  };
+
+  const fetchUserReports = async () => {
+    try {
+      const reportResponse = await axios.get(
+        `http://192.168.100.7:3000/reports/${userId}`
+      );
+
+      setReports(reportResponse.data);
+    } catch (error) {
+      alert(`Failed to load reports: ${error.message}`);
+    }
+  };
+
   const goBack = () => {
     navigation.goBack();
   };
@@ -48,43 +349,103 @@ const history = () => {
             width: 390,
             height: 56,
             flexDirection: "column",
-            justifyContent: "flex-end", 
+            justifyContent: "flex-end",
             alignSelf: "center",
-            marginTop:9
+            marginTop: 9,
           }}
         >
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-around",
-                  alignItems: "stretch",
-                  paddingBottom:17
-                }}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-around",
+              alignItems: "stretch",
+              paddingBottom: 17,
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => setSelectedTab("Service Requests")}
+            >
+              <Text
+                style={[
+                  styles.textViewFirstNotSelected,
+                  selectedTab === "Service Requests" &&
+                    styles.textViewFirstSelected,
+                ]}
               >
-                <TouchableOpacity  onPress={() => setSelectedTab("Service Requests")}>
-                  <Text style={[
-                    styles.textViewFirstNotSelected,
-                    selectedTab === "Service Requests" && styles.textViewFirstSelected
-                  ]}>Service Requests</Text>
-                </TouchableOpacity>
-                <TouchableOpacity  onPress={() => setSelectedTab("Announcements")}>
-                <Text style={[
-                    styles.textViewFirstNotSelected,
-                    selectedTab === "Announcements" && styles.textViewFirstSelected
-                ]}>Announcements</Text>
-                </TouchableOpacity>
-                <TouchableOpacity  onPress={() => setSelectedTab("Reports")}>
-                <Text style={[
-                    styles.textViewFirstNotSelected,
-                    selectedTab === "Reports" && styles.textViewFirstSelected
-                ]}>Reports</Text>
-                </TouchableOpacity>
-              </View>
+                Service Requests
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => setSelectedTab("Reports")}>
+              <Text
+                style={[
+                  styles.textViewFirstNotSelected,
+                  selectedTab === "Reports" && styles.textViewFirstSelected,
+                ]}
+              >
+                Reports
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setSelectedTab("Reviews")}>
+              <Text
+                style={[
+                  styles.textViewFirstNotSelected,
+                  selectedTab === "Reviews" && styles.textViewFirstSelected,
+                ]}
+              >
+                Reviews
+              </Text>
+            </TouchableOpacity>
+          </View>
           <View style={{ height: 3, backgroundColor: "#292D32" }} />
         </View>
       </View>
       {/* Tab Content */}
-      
+      <ScrollView>
+        {selectedTab === "Service Requests" && (
+          <View>
+            {serviceRequests.map((serviceRequest, index) => (
+              <React.Fragment key={index}>
+                <ServiceRequestListHistory serviceRequest={serviceRequest} />
+                {index < serviceRequests.length - 1 && (
+                  <View
+                    style={{
+                      justifyContent: "center",
+                      alignItems: "center",
+                      
+                    }}
+                  >
+                    <View
+                      style={{
+                        width: 352,
+                        height: 1,
+                        backgroundColor: "#D5DEE7",
+                        border: 1,
+                        marginTop: 20,
+                      }}
+                    />
+                  </View>
+                )}
+              </React.Fragment>
+            ))}
+          </View>
+        )}
+        {selectedTab === "Reports" && (
+          <View>
+            <ReportListHistory reports={reports} />
+            <FlatList
+              data={reports}
+              keyExtractor={(item) => item.id.toString()}
+              renderItem={({ item }) => <Text>{item.title}</Text>}
+            />
+          </View>
+        )}
+        {selectedTab === "Reviews" && (
+          <View>
+            <ReviewListHistory reviews={reviews} />
+          </View>
+        )}
+      </ScrollView>
     </View>
   );
 };
@@ -92,10 +453,10 @@ const history = () => {
 export default history;
 
 const styles = StyleSheet.create({
-  textViewFirstNotSelected:{
-    color:'#B3BFCB'
+  textViewFirstNotSelected: {
+    color: "#B3BFCB",
   },
-  textViewFirstSelected:{
-    color:'#292D32'
-  }
+  textViewFirstSelected: {
+    color: "#292D32",
+  },
 });

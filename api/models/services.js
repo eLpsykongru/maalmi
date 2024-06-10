@@ -1,9 +1,9 @@
 const mongoose = require('mongoose');
 
-const serviceSchema = new mongoose.Schema({
+const servicesSchema = new mongoose.Schema({
     serviceName:{
         type:String,
-        required:true
+        
     },
     Rate:{ type: Number, min: 1, max: 5 },
     description:{
@@ -13,18 +13,26 @@ const serviceSchema = new mongoose.Schema({
     serviceLogo:String,
     category:{
         type:String,
-        required:true
+        
     },
     avgPrice:{
         type:Number,
-        required:true
+        
     },
-    addedDate: {
+    minPrice:{
+        type:Number,
+        
+    },
+    maxPrice:{
+        type:Number,
+        
+    },
+    createdAt: {
         type: Date,
         default: Date.now,
       },
     
 })
 
-const Service = mongoose.model('Service',serviceSchema);
-module.exports=Service;
+const Services = mongoose.model('Services',servicesSchema);
+module.exports=Services;
