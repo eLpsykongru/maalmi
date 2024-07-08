@@ -31,8 +31,16 @@ const servicesSchema = new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
+     
+
+      artisans:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Artisans'
+      }]
     
 })
+
+
 
 const Services = mongoose.model('Services',servicesSchema);
 module.exports=Services;

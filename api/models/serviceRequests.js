@@ -1,11 +1,12 @@
  
 const mongoose  = require('mongoose');
 
+
+
 const serviceRequestsSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'Users',
-        
     },
     service:{
         type:mongoose.Schema.Types.ObjectId,
@@ -17,6 +18,10 @@ const serviceRequestsSchema = new mongoose.Schema({
         ref:'Artisans',
         
     },
+    reports:[{
+         type: mongoose.Schema.Types.ObjectId, 
+         ref: "Reports" 
+    }], 
     timeTaken:{type : Date},
     price:{type:Number},
     requestDate:{ type: Date, default: Date.now }, 

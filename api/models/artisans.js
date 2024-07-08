@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const ServiceRequest = require("./serviceRequests");
+const Reviews = require("./reviews");
 
 const artisansSchema = new mongoose.Schema({
   name: {
@@ -40,6 +41,7 @@ const artisansSchema = new mongoose.Schema({
   sentAnnounce: [{ type: mongoose.Schema.Types.ObjectId, ref: "AnnounceArtisans" }],
   serviceRequests: [{ type: mongoose.Schema.Types.ObjectId, ref: "ServiceRequests" }],
   services: [{ type: mongoose.Schema.Types.ObjectId, ref: "Services" }],
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Reviews" }],
   registerDate: 
     {
       type: Date,

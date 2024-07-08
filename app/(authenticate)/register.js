@@ -37,7 +37,7 @@ const register = () => {
       city:city,
       adresse:adresse
     } 
-    axios.post("http://192.168.100.7:3000/register",user)
+    axios.post("http:// 192.168.0.61:3000/register",user)
       .then((response) =>{
   
       console.log(response);

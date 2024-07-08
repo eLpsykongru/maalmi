@@ -16,7 +16,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import { decode as atob } from "base-64";
 import { AntDesign } from "@expo/vector-icons";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import ServiceCard from "../../../components/ServiceCard";
 
 const index = () => {
@@ -101,7 +101,7 @@ const index = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get("http://192.168.100.7:3000/services");
+        const response = await axios.get("http://192.168.0.61:3000/services");
         const serviceData = response.data.services;
         setServices(serviceData);
       } catch (error) {
@@ -115,7 +115,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.100.7:3000/profile/${userId}`
+        `http://192.168.0.61:3000/profile/${userId}`
       );
       const userData = response.data.user;
       const userDataName = response.data.user.name;
@@ -132,6 +132,7 @@ const index = () => {
   };
 
   return (
+     <GestureHandlerRootView style={{ flex: 1 }}>    
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <View
         style={{
@@ -343,6 +344,7 @@ const index = () => {
         </View>
       </ScrollView>
     </View>
+    </GestureHandlerRootView>
   );
 };
 

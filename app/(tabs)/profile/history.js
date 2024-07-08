@@ -11,7 +11,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { decode as atob } from "base-64";
 import { useNavigation } from "@react-navigation/native";
-import { ScrollView } from "react-native-gesture-handler";
+import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
 
 
@@ -195,7 +195,7 @@ const ReportListHistory = ({report}) => {
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={{ color: "#292D32" }}>Issues: {report.issues}</Text>
 
-        <TouchableOpacity onPress={() => navigation.navigate("reportDetails")}>
+        <TouchableOpacity onPress={() => navigation.navigate("reportDetails",{report})}>
           <Text style={{ color: "#979797", textDecorationLine: "underline" }}>
             More details
           </Text>
@@ -291,7 +291,7 @@ const history = () => {
   const fetchUserServiceRequest = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.100.7:3000/service-request/${userId}`
+        `http://192.168.0.61:3000/service-request/${userId}`
       );
 
       setServiceRequests(response.data.serviceRequests);
@@ -304,7 +304,7 @@ const history = () => {
   const fetchUserReports = async () => {
     try {
       const reportResponse = await axios.get(
-        `http://192.168.100.7:3000/reports/${userId}`
+        `http://192.168.0.61:3000/reports/${userId}`
       );
 
       setReports(reportResponse.data.reports);
@@ -319,6 +319,7 @@ const history = () => {
   };
 
   return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <TouchableOpacity
         style={{
@@ -470,6 +471,7 @@ const history = () => {
         )}
       </ScrollView>
     </View>
+    </GestureHandlerRootView>
   );
 };
 
