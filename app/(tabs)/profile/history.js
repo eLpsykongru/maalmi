@@ -222,6 +222,7 @@ const history = () => {
   const [reviews, setReviews] = useState([]);
 
   const [userId, setUserId] = useState("");
+  
 
   function base64UrlDecode(str) {
     try {
@@ -291,7 +292,7 @@ const history = () => {
   const fetchUserServiceRequest = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.61:3000/service-request/${userId}`
+        `http://192.168.100.7:3000/service-request/${userId}`
       );
 
       setServiceRequests(response.data.serviceRequests);
@@ -304,9 +305,9 @@ const history = () => {
   const fetchUserReports = async () => {
     try {
       const reportResponse = await axios.get(
-        `http://192.168.0.61:3000/reports/${userId}`
+        `http://192.168.100.7:3000/reports/${userId}`
       );
-
+       
       setReports(reportResponse.data.reports);
       
     } catch (error) {

@@ -101,7 +101,7 @@ const index = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get("http://192.168.0.61:3000/services");
+        const response = await axios.get("http://192.168.100.7:3000/services");
         const serviceData = response.data.services;
         setServices(serviceData);
       } catch (error) {
@@ -115,7 +115,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.0.61:3000/profile/${userId}`
+        `http://192.168.100.7:3000/profile/${userId}`
       );
       const userData = response.data.user;
       const userDataName = response.data.user.name;

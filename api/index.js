@@ -726,7 +726,9 @@ app.get("/reports/:userId", async (req, res) => {
   const {userId} = req.params;
   
   try {
+    
     const reports = await Report.find({ user: userId })
+    
     .populate('artisan')
     .populate('service')
     .populate('user')
@@ -1038,13 +1040,14 @@ app.post("/service-request", async (req, res) => {
 app.get("/service-request/:userId", async (req, res) => {
   
   const { userId } = req.params;
+ 
   try {
-    
      
     const serviceRequests = await ServiceRequest.find({ user: userId })
     .populate('user')
     .populate('artisan')
     .populate('service'); 
+    
     
     if (!serviceRequests || serviceRequests.length === 0) {
       
