@@ -292,7 +292,7 @@ const history = () => {
   const fetchUserServiceRequest = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.100.7:3000/service-request/${userId}`
+        `http://192.168.100.7:3000/service-request/user/${userId}`
       );
 
       setServiceRequests(response.data.serviceRequests);
@@ -305,7 +305,7 @@ const history = () => {
   const fetchUserReports = async () => {
     try {
       const reportResponse = await axios.get(
-        `http://192.168.100.7:3000/reports/${userId}`
+        `http://192.168.100.7:3000/reports/user/${userId}`
       );
        
       setReports(reportResponse.data.reports);

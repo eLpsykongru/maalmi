@@ -683,7 +683,7 @@ app.get("/reports", async (req, res) => {
   }
 });
 // GET /api/reports/:artisanId - Get all reports for an artisan
-app.get("/reports/:artisanId", async (req, res) => {
+app.get("/reports/artisan/:artisanId", async (req, res) => {
   const {artisanId} = req.params;
   
   try {
@@ -702,7 +702,7 @@ app.get("/reports/:artisanId", async (req, res) => {
   }
 });
 // GET /api/reports/:serviceId - Get all reports for a service
-app.get("/reports/:serviceId", async (req, res) => {
+app.get("/reports/service/:serviceId", async (req, res) => {
   const {serviceId} = req.params;
   
   try {
@@ -722,7 +722,7 @@ app.get("/reports/:serviceId", async (req, res) => {
 });
 //
 // GET /api/reports/:userId - Get all reports for a user
-app.get("/reports/:userId", async (req, res) => {
+app.get("/reports/user/:userId", async (req, res) => {
   const {userId} = req.params;
   
   try {
@@ -744,7 +744,7 @@ app.get("/reports/:userId", async (req, res) => {
 });
 
 // GET /api/reports/:serviceRequestId - Get all reports for a service request
-app.get("/reports/:serviceRequestId", async (req, res) => {
+app.get("/reports/serviceRequest/:serviceRequestId", async (req, res) => {
   const {serviceRequestId} = req.params;
   
   try {
@@ -879,7 +879,7 @@ app.post("/announce", async (req, res) => {
 });
 
 // GET /api/announces/:userId - Get all announces for a user
-app.get('/announces/:userId', async (req, res) => {
+app.get('/announces/user/:userId', async (req, res) => {
   const userId = req.params.userId;
   try {
     const announces = await Annonce.find({ user: userId });
@@ -1037,7 +1037,7 @@ app.post("/service-request", async (req, res) => {
 });
 
 // GET /api/service-request/:userId - Get all service requests for a user
-app.get("/service-request/:userId", async (req, res) => {
+app.get("/service-request/user/:userId", async (req, res) => {
   
   const { userId } = req.params;
  

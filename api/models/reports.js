@@ -11,12 +11,14 @@ const reportsSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         ref:'Artisans',
     },
-
-
-     
+    
+    service:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:'Services',
+    },
     serviceRequest:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'ServiceRequest',
+        ref:'ServiceRequests',
     },
     
     title:{
