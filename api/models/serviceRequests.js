@@ -26,6 +26,7 @@ const serviceRequestsSchema = new mongoose.Schema({
     price:{type:Number},
     requestDate:{ type: Date, default: Date.now }, 
     status:{type:String,enum:['Pending','Accepted','Rejected','Completed'],default:'Pending'},
+    rate:{ type: Number, min: 1, max: 5 },
 });
 
 serviceRequestsSchema.methods.isValidStatus = function(status){

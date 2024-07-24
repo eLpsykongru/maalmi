@@ -164,7 +164,7 @@ const ServiceRequestListHistory = ({ serviceRequest }) => {
 };
 
 const ReportListHistory = ({report}) => {
-  
+ 
   const navigation = useNavigation();
   return (
     <View style={{ flex: 1, margin: 32 }}>

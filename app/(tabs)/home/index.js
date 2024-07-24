@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Ionicons } from "@expo/vector-icons";
+import Ionicons from '@expo/vector-icons/Ionicons';
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
@@ -162,7 +162,7 @@ const index = () => {
             gap: 4,
           }}
         >
-          <Ionicons name="ios-location-sharp" size={30} color="black" />
+          <Ionicons name="location-sharp" size={30} color="black" />
           <Text style={{ color: "#292D32", fontSize: 13, fontWeight: 700 }}>
             {userCity}, Morocco
           </Text>
