@@ -18,6 +18,7 @@ import { decode as atob } from "base-64";
 import { AntDesign } from "@expo/vector-icons";
 import { FlatList, GestureHandlerRootView } from "react-native-gesture-handler";
 import ServiceCard from "../../../components/ServiceCard";
+import { SERVER_IP } from "@env";
 
 const index = () => {
   const [userId, setUserId] = useState("");
@@ -26,6 +27,7 @@ const index = () => {
   const [userCity, setUserCity] = useState("");
   const [services, setServices] = useState("");
   const [refreshing, setRefreshing] = React.useState(false);
+  const serverIp = SERVER_IP || "default_ip_here";
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
@@ -101,7 +103,7 @@ const index = () => {
   useEffect(() => {
     const fetchServices = async () => {
       try {
-        const response = await axios.get("http://192.168.100.7:3000/services");
+        const response = await axios.get("http://${serverIp}:3000/services");
         const serviceData = response.data.services;
         setServices(serviceData);
       } catch (error) {
@@ -115,7 +117,7 @@ const index = () => {
   const fetchUserProfile = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.100.7:3000/profile/${userId}`
+        `http://${serverIp}:3000/profile/${userId}`
       );
       const userData = response.data.user;
       const userDataName = response.data.user.name;

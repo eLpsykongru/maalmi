@@ -14,9 +14,10 @@ import React, { useState, useEffect } from "react";
 import { Redirect, useRouter } from "expo-router";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { SERVER_IP } from '@env';
 
 const login = () => {
-
+  const serverIp = SERVER_IP || 'default_ip_here';
   
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -35,6 +36,7 @@ const login = () => {
     };
     checkLoginStatus();
   }, []);
+
   const handleLogin = () => {
     const user = {
       phoneNumber: phoneNumber,
@@ -43,22 +45,20 @@ const login = () => {
     
     console.log("User object sent to server:", user);
 
-    axios.post(`http://192.168.100.7:3000/login`, user)
-  .then((response) => {
-    console.log("Response from server:", response);
-    const token = response.data.token;
-    console.log("Received token:", token);
-    AsyncStorage.setItem("authToken", token);
-    router.replace("/(tabs)/home");
-  })
-  .catch((error) => {
-    console.log("Error during login:", error);
-  });
-
-  
+    axios.post(`http://${serverIp}:3000/login`, user)
+      .then((response) => {
+        console.log("Response from server:", response);
+        const token = response.data.token;
+        console.log("Received token:", token);
+        AsyncStorage.setItem("authToken", token);
+        router.replace("/(tabs)/home");
+      })
+      .catch((error) => {
+        console.log("Error during login:", error);
+      });
   };
-  
-    return (
+
+  return (
     <SafeAreaView style={{ backgroundColor: "white", flex: 1 }}>
       <View style={{ alignItems: "center" }}>
         <Image

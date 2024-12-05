@@ -17,7 +17,7 @@ import React, { useState } from "react";
 import { useRouter } from "expo-router";
 import { FontAwesome5 } from "@expo/vector-icons";
 import axios from "axios";
-
+import {SERVER_IP} from "@env";
 
 const register = () => {
   const [step, setStep] = useState(1);
@@ -28,7 +28,7 @@ const register = () => {
   const [city, setCity] = useState("");
   const [adresse, setAdresse] = useState("");
   const router = useRouter();
-
+  const serverIp = SERVER_IP || 'default_ip_here';
   const handleRegister = ()=> {
     const user = {
       phoneNumber:phoneNumber,
@@ -37,7 +37,7 @@ const register = () => {
       city:city,
       adresse:adresse
     } 
-    axios.post("http://192.168.100.7:3000/register",user)
+    axios.post("http://${serverIp}:3000/register",user)
       .then((response) =>{
   
       console.log(response);

@@ -13,9 +13,10 @@ import { decode as atob } from "base-64";
 import { useNavigation } from "@react-navigation/native";
 import { ScrollView, GestureHandlerRootView } from "react-native-gesture-handler";
 import moment from "moment";
-
+import { SERVER_IP } from "@env";
 
 const ServiceRequestListHistory = ({ serviceRequest }) => {
+  const serverIp = SERVER_IP || 'default_ip_here';
   return (
     <View style={{ flex: 1, flexDirection: "row", marginTop: 30 }}>
       <View
@@ -164,7 +165,7 @@ const ServiceRequestListHistory = ({ serviceRequest }) => {
 };
 
 const ReportListHistory = ({report}) => {
- 
+  const serverIp = SERVER_IP || 'default_ip_here';
   const navigation = useNavigation();
   return (
     <View style={{ flex: 1, margin: 32 }}>
@@ -206,12 +207,15 @@ const ReportListHistory = ({report}) => {
 };
 
 const ReviewListHistory = () => {
+  const serverIp = SERVER_IP || 'default_ip_here';
   const navigation = useNavigation();
   //                          *To be done later*
   return <View></View>;
 };
 
 const history = () => {
+  const serverIp = SERVER_IP || 'default_ip_here';
+  console.log(serverIp);
   const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState("Service Requests");
   const [serviceRequests, setServiceRequests] = useState([]);
@@ -292,7 +296,7 @@ const history = () => {
   const fetchUserServiceRequest = async () => {
     try {
       const response = await axios.get(
-        `http://192.168.100.7:3000/service-request/user/${userId}`
+        `http://${serverIp}:3000/service-request/user/${userId}`
       );
 
       setServiceRequests(response.data.serviceRequests);
@@ -305,7 +309,7 @@ const history = () => {
   const fetchUserReports = async () => {
     try {
       const reportResponse = await axios.get(
-        `http://192.168.100.7:3000/reports/user/${userId}`
+        `http://${serverIp}:3000/reports/user/${userId}`
       );
        
       setReports(reportResponse.data.reports);
